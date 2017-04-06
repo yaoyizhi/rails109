@@ -1,12 +1,12 @@
 class MoviesController < ApplicationController
     before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
-
     def index
         @movies = Movie.all
-    end
+      end
 
     def show
         @movie = Movie.find(params[:id])
+        @reviews = @movie.reviews
     end
 
     def new
@@ -40,6 +40,12 @@ class MoviesController < ApplicationController
         @movie = Movie.find(params[:id])
         @movie.destroy
         redirect_to movies_path
+    end
+
+    def collect
+        @movie = Movie.find(params[:id])
+        @movie.post(movie_params)
+        redirect_to favorite_movie_path
     end
 
     private
