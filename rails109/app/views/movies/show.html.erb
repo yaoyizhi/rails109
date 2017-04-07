@@ -1,4 +1,12 @@
-<%= link_to("write a review", new_movie_review_path(@movie), class: "btn btn-primary pull-right")%>
+<span class="pull-right">
+    <% if current_user && current_user.is_collector_of?(@movie)%>
+        <label class="label label-success">已收藏</label>
+        <%= link_to("write a review", new_movie_review_path(@movie), class: "btn btn-default")%>
+    <% else %>
+        <label class="label label-warning">请收藏</label>
+        <%= link_to("Favorite", favorite_movie_path(@movie), method: :post, class: "btn  btn-default ")%>
+    <% end %>
+</span>
 <h1><%= @movie.title %></h1>
 <p>
     <%= simple_format(@movie.description) %>

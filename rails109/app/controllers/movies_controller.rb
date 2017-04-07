@@ -15,6 +15,7 @@ class MoviesController < ApplicationController
 
     def create
         @movie = Movie.new(movie_params)
+        @movie.user = current_user
         if @movie.save
             redirect_to movies_path
         else
@@ -28,6 +29,7 @@ class MoviesController < ApplicationController
 
     def update
         @movie = Movie.find(params[:id])
+        @movie.user = current_user
         if @movie.update(movie_params)
             redirect_to movies_path
             flash[:notice] = 'Update Success'
@@ -42,10 +44,16 @@ class MoviesController < ApplicationController
         redirect_to movies_path
     end
 
-    def collect
+    def favorite
         @movie = Movie.find(params[:id])
-        @movie.post(movie_params)
-        redirect_to favorite_movie_path
+        if !current_user.is_collector_of?(@movie)
+            current_user.favorite!(@movie)
+            flash[:notice] = '收藏成功'
+            # redirect_to movie_path(@movie)
+        else
+            flash[:alert] = '你已经收藏'
+        end
+        redirect_to movie_path(@movie)
     end
 
     private
